@@ -1,0 +1,50 @@
+Parameters
+tf=14 ,>0 ,<=100
+u =0.0030432 , >0.0001 , <=1                          % set Upper and Lower limit 
+alpha =0.0038904  , >=-0.2094 , <= 0.08726              % -12 degree lower limit and 5 degree upper limit
+I=1833
+m=1360
+sigma=0.048
+omega_0=37
+R=5.37
+href=100
+last
+
+Variables
+x1 =0.0014629  ,>=0 ,<=0.04826 
+x2 =0.027701,>0
+x3 =0.96082, >=0.65 ,<=1.15 
+x4 =0.029736
+x5 =0.99926 ,>=0 ,< 1 
+x6 =0.041266  ,>=0 
+obstacle   > 1
+landing_min = 50
+slack >= 0
+
+
+
+
+Equations
+
+minimize      last*(81.48*x1)^2 + last*(25.76*x2)^2
+
+
+$x1= (0.04937-16.22*u*cos(alpha)*x3^2 - 0.207*x1*sqrt(x1^2+x2^2))*tf
+$x2=(16.22*u*x3^2*sin(alpha)-0.207*x2*sqrt(x1^2+x2^2))*tf
+$x3=(-349.22*(1.156*x4 + (x2*sin(alpha)-x1*cos(alpha))/x3)*u*x3^2 - 0.01822*x3^2*(1+4.65*((x1*sin(alpha)+x2*cos(alpha))/x3)^2))*tf
+$x4=(33.55*x3*u-77.50*x3*x4*sqrt((1.156*x4+(x2*sin(alpha)-x1*cos(alpha))/x3)^2+((x2*cos(alpha)+x1*sin(alpha))/x3)^2 + 0.5*u*(1-2*((x2*cos(alpha)+x1*sin(alpha))/(x3*sqrt(0.5*u)))^2)*(1/(2 + (1.156*x4+(x2*sin(alpha)-x1*cos(alpha))/x3)/sqrt(0.5*u))^2 - ((1.156*x4+(x2*sin(alpha)-x1*cos(alpha))/x3)/sqrt(0.5*u))^2 + (1+(1.156*x4+(x2*sin(alpha)-x1*cos(alpha))/x3)/sqrt(0.5*u))*(0.109+0.217*(((1.156*x4+(x2*sin(alpha)-x1*cos(alpha))/x3)/sqrt(0.5*u))-0.15)^2))))*tf
+$x5=-((omega_0*R/href)*x1 )*tf
+$x6=((omega_0*R/href)*x2 )*tf
+obstacle = (x6-(40/href))^2/(2/href)^2 + (x5-(30/href))^2/(35/href)^2
+landing_min + slack = x6
+
+!last * alpha = 0
+!last * (x5) =0 
+
+Connections
+p(end).n(end).alpha = FIXED
+p(end).n(end).alpha = 0.0
+p(end).n(end).x5 = FIXED
+p(end).n(end).x5 = 0.0
+p(end).n(end).landing_min = FIXED
+p(end).n(end).landing_min = 50.0
